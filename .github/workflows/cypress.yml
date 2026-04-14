@@ -13,38 +13,40 @@ jobs:
       - name: Checkout Cypress repo
         uses: actions/checkout@v3
 
-      # 2. Clone Backend Repo
+      # 2. Install Cypress dependencies (🔥 FIX)
+      - name: Install Cypress dependencies
+        run: npm install
+
+      # 3. Clone backend
       - name: Clone backend
         run: git clone https://github.com/sameepabadhuge/QuizMaster-backend.git
 
-      # 3. Clone Frontend Repo
+      # 4. Clone frontend
       - name: Clone frontend
         run: git clone https://github.com/sameepabadhuge/QuizMaster-frontend.git
 
-      # 4. Install backend dependencies
+      # 5. Backend setup
       - name: Install backend
         working-directory: QuizMaster-backend
         run: npm install
 
-      # 5. Start backend
       - name: Start backend
         working-directory: QuizMaster-backend
         run: npm start &
 
-      # 6. Install frontend dependencies
+      # 6. Frontend setup
       - name: Install frontend
         working-directory: QuizMaster-frontend
         run: npm install
 
-      # 7. Start frontend
       - name: Start frontend
         working-directory: QuizMaster-frontend
         run: npm run dev &
 
-      # 8. Wait until frontend is ready
+      # 7. Wait for app
       - name: Wait for frontend
         run: npx wait-on http://localhost:3000
 
-      # 9. Run Cypress tests
+      # 8. Run Cypress
       - name: Run Cypress
         run: npx cypress run
