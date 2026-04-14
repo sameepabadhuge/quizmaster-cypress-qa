@@ -9,36 +9,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout Cypress repo
       - name: Checkout Cypress repo
         uses: actions/checkout@v3
 
-      # Clone frontend
-      - name: Clone frontend
-        run: git clone https://github.com/sameepabadhuge/QuizMaster-frontend.git frontend
-
-      # Clone backend
       - name: Clone backend
-        run: git clone https://github.com/sameepabadhuge/QuizMaster-backend.git backend
+        run: git clone https://github.com/YOUR_USERNAME/QuizMaster-backend.git
 
-      # Install backend dependencies
-      - name: Install backend
-        run: |
-          cd backend
-          npm install
+      - name: Clone frontend
+        run: git clone https://github.com/YOUR_USERNAME/QuizMaster-frontend.git
 
-      # Install frontend dependencies
-      - name: Install frontend
-        run: |
-          cd frontend
-          npm install
+      # Backend
+      - name: Install backend dependencies
+        working-directory: QuizMaster-backend
+        run: npm install
 
-      # Run Cypress
+      - name: Start backend
+        working-directory: QuizMaster-backend
+        run: npm start &
+
+      # Frontend
+      - name: Install frontend dependencies
+        working-directory: QuizMaster-frontend
+        run: npm install
+
+      - name: Start frontend
+        working-directory: QuizMaster-frontend
+        run: npm run dev &
+
+      # Wait
+      - name: Wait for app
+        run: npx wait-on http://localhost:3000
+
+      # Cypress
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: |
-            cd backend && npm start &
-            cd frontend && npm run dev
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
+        run: npx cypress run
